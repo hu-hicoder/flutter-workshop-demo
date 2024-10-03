@@ -91,38 +91,55 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
+        backgroundColor: Colors.teal,
+        title: Text(
+          widget.title,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
       body: ListView.builder(
         itemCount: _todoItems.length,
         itemBuilder: (context, index) {
-          return ListTile(
-            leading: Checkbox(
-              value: _todoItems[index].isDone,
-              onChanged: (bool? value) {
-                _toggleTodoDone(index);
-              },
+          return Card(
+            margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10.0),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0),
             ),
-            title: Text(
-              _todoItems[index].title,
-              style: TextStyle(
+            elevation: 5,
+            child: ListTile(
+              leading: Checkbox(
+                activeColor: Colors.teal,
+                value: _todoItems[index].isDone,
+                onChanged: (bool? value) {
+                  _toggleTodoDone(index);
+                },
+              ),
+              title: Text(
+                _todoItems[index].title,
+                style: TextStyle(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.w600,
                   decoration: _todoItems[index].isDone
                       ? TextDecoration.lineThrough
-                      : TextDecoration.none),
-            ),
-            subtitle: Text(_todoItems[index].content,
-                style: const TextStyle(color: Colors.grey)),
-            trailing: IconButton(
-              icon: const Icon(Icons.delete),
-              onPressed: () {
-                _removeTodoItem(index);
-              },
+                      : TextDecoration.none,
+                ),
+              ),
+              subtitle: Text(_todoItems[index].content,
+                  style: const TextStyle(fontSize: 14.0, color: Colors.grey)),
+              trailing: IconButton(
+                icon: const Icon(Icons.delete, color: Colors.redAccent),
+                onPressed: () {
+                  _removeTodoItem(index);
+                },
+              ),
             ),
           );
         },
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.teal,
         onPressed: _displayAddTodoDialog,
         tooltip: 'タスクを追加',
         child: const Icon(Icons.add),
