@@ -12,8 +12,9 @@ class HomeScreen extends StatefulWidget {
 class TodoItem {
   String title;
   String content;
+  bool isDone;
 
-  TodoItem(this.title, this.content);
+  TodoItem(this.title, this.content, {this.isDone = false});
 }
 
 class _HomeScreenState extends State<HomeScreen> {
@@ -30,6 +31,13 @@ class _HomeScreenState extends State<HomeScreen> {
   void _removeTodoItem(int index) {
     setState(() {
       _todoItems.removeAt(index);
+    });
+  }
+
+  // タスクの完了状態をトグルする
+  void _toggleTodoDone(int index) {
+    setState(() {
+      _todoItems[index].isDone = !_todoItems[index].isDone;
     });
   }
 
@@ -90,7 +98,19 @@ class _HomeScreenState extends State<HomeScreen> {
         itemCount: _todoItems.length,
         itemBuilder: (context, index) {
           return ListTile(
-            title: Text(_todoItems[index].title),
+            leading: Checkbox(
+              value: _todoItems[index].isDone,
+              onChanged: (bool? value) {
+                _toggleTodoDone(index);
+              },
+            ),
+            title: Text(
+              _todoItems[index].title,
+              style: TextStyle(
+                  decoration: _todoItems[index].isDone
+                      ? TextDecoration.lineThrough
+                      : TextDecoration.none),
+            ),
             subtitle: Text(_todoItems[index].content,
                 style: const TextStyle(color: Colors.grey)),
             trailing: IconButton(
