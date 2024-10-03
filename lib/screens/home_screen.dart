@@ -8,13 +8,21 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
+// タスクのタイトルと内容を保持するクラス
+class TodoItem {
+  String title;
+  String content;
+
+  TodoItem(this.title, this.content);
+}
+
 class _HomeScreenState extends State<HomeScreen> {
-  final List<String> _todoItems = []; // TODOリストを保持するリスト
+  final List<TodoItem> _todoItems = []; // TODOリストを保持するリスト
 
   // 新しいタスクを追加する
-  void _addTodoItem(String task) {
+  void _addTodoItem(String title, String content) {
     setState(() {
-      _todoItems.add(task);
+      _todoItems.add(TodoItem(title, content));
     });
   }
 
@@ -30,13 +38,26 @@ class _HomeScreenState extends State<HomeScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        String newTask = '';
+        String newTitle = '';
+        String newContent = '';
         return AlertDialog(
           title: const Text('新しいタスクを追加'),
-          content: TextField(
-            onChanged: (String value) {
-              newTask = value;
-            },
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              TextField(
+                onChanged: (String value) {
+                  newTitle = value;
+                },
+                decoration: const InputDecoration(hintText: 'タイトル'),
+              ),
+              TextField(
+                onChanged: (String value) {
+                  newContent = value;
+                },
+                decoration: const InputDecoration(hintText: '内容'),
+              ),
+            ],
           ),
           actions: <Widget>[
             TextButton(
@@ -48,7 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
             TextButton(
               child: const Text('追加'),
               onPressed: () {
-                _addTodoItem(newTask);
+                _addTodoItem(newTitle, newContent);
                 Navigator.of(context).pop();
               },
             ),
@@ -69,7 +90,9 @@ class _HomeScreenState extends State<HomeScreen> {
         itemCount: _todoItems.length,
         itemBuilder: (context, index) {
           return ListTile(
-            title: Text(_todoItems[index]),
+            title: Text(_todoItems[index].title),
+            subtitle: Text(_todoItems[index].content,
+                style: const TextStyle(color: Colors.grey)),
             trailing: IconButton(
               icon: const Icon(Icons.delete),
               onPressed: () {
