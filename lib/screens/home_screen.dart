@@ -9,12 +9,53 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _counter = 0;
+  final List<String> _todoItems = []; // TODOリストを保持するリスト
 
-  void _incrementCounter() {
+  // 新しいタスクを追加する
+  void _addTodoItem(String task) {
     setState(() {
-      _counter++;
+      _todoItems.add(task);
     });
+  }
+
+  // タスクを削除する
+  void _removeTodoItem(int index) {
+    setState(() {
+      _todoItems.removeAt(index);
+    });
+  }
+
+  // タスク追加ダイアログを表示する
+  void _displayAddTodoDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        String newTask = '';
+        return AlertDialog(
+          title: const Text('新しいタスクを追加'),
+          content: TextField(
+            onChanged: (String value) {
+              newTask = value;
+            },
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('キャンセル'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('追加'),
+              onPressed: () {
+                _addTodoItem(newTask);
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -24,25 +65,25 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+      body: ListView.builder(
+        itemCount: _todoItems.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            title: Text(_todoItems[index]),
+            trailing: IconButton(
+              icon: const Icon(Icons.delete),
+              onPressed: () {
+                _removeTodoItem(index);
+              },
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
+          );
+        },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
+        onPressed: _displayAddTodoDialog,
+        tooltip: 'タスクを追加',
         child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      ),
     );
   }
 }
