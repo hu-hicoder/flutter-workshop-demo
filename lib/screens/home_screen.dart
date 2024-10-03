@@ -1,8 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key, required this.title});
-  final String title;
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -18,7 +18,7 @@ class TodoItem {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final List<TodoItem> _todoItems = []; // TODOリストを保持するリスト
+  final List<TodoItem> _todoItems = [];
 
   // 新しいタスクを追加する
   void _addTodoItem(String title, String content) {
@@ -90,27 +90,42 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 246, 244, 241),
       appBar: AppBar(
-        backgroundColor: Colors.teal,
-        title: Text(
-          widget.title,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
+        leading: IconButton(
+          icon: const Icon(Icons.menu, color: Colors.black),
+          onPressed: () {
+            //TODO
+          },
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.info_outlined, color: Colors.black),
+            onPressed: () {
+              //TODO
+            },
+          ),
+          const SizedBox(width: 10),
+        ],
+        backgroundColor: const Color.fromARGB(255, 151, 232, 214),
       ),
       body: ListView.builder(
         itemCount: _todoItems.length,
         itemBuilder: (context, index) {
           return Card(
-            margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10.0),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15.0),
+            color: Colors.white,
+            margin: const EdgeInsets.only(
+              left: 12,
+              right: 12,
+              top: 12,
             ),
-            elevation: 5,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            elevation: 1,
             child: ListTile(
               leading: Checkbox(
-                activeColor: Colors.teal,
+                activeColor: const Color.fromARGB(255, 65, 84, 77),
                 value: _todoItems[index].isDone,
                 onChanged: (bool? value) {
                   _toggleTodoDone(index);
@@ -120,7 +135,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 _todoItems[index].title,
                 style: TextStyle(
                   fontSize: 16.0,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w400,
                   decoration: _todoItems[index].isDone
                       ? TextDecoration.lineThrough
                       : TextDecoration.none,
@@ -129,7 +144,7 @@ class _HomeScreenState extends State<HomeScreen> {
               subtitle: Text(_todoItems[index].content,
                   style: const TextStyle(fontSize: 14.0, color: Colors.grey)),
               trailing: IconButton(
-                icon: const Icon(Icons.delete, color: Colors.redAccent),
+                icon: const Icon(Icons.delete_outlined, color: Colors.black),
                 onPressed: () {
                   _removeTodoItem(index);
                 },
@@ -139,7 +154,8 @@ class _HomeScreenState extends State<HomeScreen> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.teal,
+        shape: const CircleBorder(),
+        backgroundColor: const Color.fromARGB(255, 130, 246, 221),
         onPressed: _displayAddTodoDialog,
         tooltip: 'タスクを追加',
         child: const Icon(Icons.add),

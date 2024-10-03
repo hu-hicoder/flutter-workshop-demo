@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_workshop_demo/screens/home_screen.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -9,10 +10,13 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'TODO App',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange.shade400),
+        colorScheme: ColorScheme.fromSeed(
+            seedColor: const Color.fromARGB(255, 79, 255, 217)),
         useMaterial3: true,
+        textTheme: GoogleFonts.robotoMonoTextTheme(),
       ),
-      home: const HomeScreen(title: 'TODO App'),
+      home: const HomeScreen(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
