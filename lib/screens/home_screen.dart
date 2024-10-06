@@ -1,5 +1,7 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -15,30 +17,81 @@ class TodoItem {
   bool isDone;
 
   TodoItem(this.title, this.content, {this.isDone = false});
+
+  // TodoItemをJSONに変換するもの
+  Map<String, dynamic> toJson() {
+    return {
+      'title': title,
+      'content': content,
+      'isDone': isDone,
+    };
+  }
+
+  // JSONからTodoItemを生成するもの
+  factory TodoItem.fromJson(Map<String, dynamic> json) {
+    return TodoItem(
+      json['title'] as String,
+      json['content'] as String,
+      isDone: json['isDone'] as bool,
+    );
+  }
 }
 
 class _HomeScreenState extends State<HomeScreen> {
   final List<TodoItem> _todoItems = [];
 
-  // 新しいタスクを追加する
-  void _addTodoItem(String title, String content) {
+  @override
+  void initState() {
+    super.initState();
+    _loadTodoItems();
+  }
+
+  // データを読み込むメソッド
+  Future<void> _loadTodoItems() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? todoListString = prefs.getString('todoList');
+    if (todoListString != null) {
+      List<dynamic> jsonList = jsonDecode(todoListString);
+      setState(() {
+        _todoItems.clear();
+        for (var item in jsonList) {
+          _todoItems.add(TodoItem.fromJson(item));
+        }
+      });
+    }
+  }
+
+  // データを保存するメソッド
+  Future<void> _saveTodoItems() async {
+    final prefs = await SharedPreferences.getInstance();
+    List<Map<String, dynamic>> jsonList =
+        _todoItems.map((item) => item.toJson()).toList();
+    String jsonString = jsonEncode(jsonList);
+    await prefs.setString('todoList', jsonString);
+  }
+
+// 新しいタスクを追加する
+  Future<void> _addTodoItem(String title, String content) async {
     setState(() {
       _todoItems.add(TodoItem(title, content));
     });
+    await _saveTodoItems();
   }
 
-  // タスクを削除する
-  void _removeTodoItem(int index) {
+// タスクを削除する
+  Future<void> _removeTodoItem(int index) async {
     setState(() {
       _todoItems.removeAt(index);
     });
+    await _saveTodoItems();
   }
 
-  // タスクの完了状態をトグルする
-  void _toggleTodoDone(int index) {
+// タスクの完了状態をトグルする
+  Future<void> _toggleTodoDone(int index) async {
     setState(() {
       _todoItems[index].isDone = !_todoItems[index].isDone;
     });
+    await _saveTodoItems();
   }
 
   // タスク追加ダイアログを表示する
