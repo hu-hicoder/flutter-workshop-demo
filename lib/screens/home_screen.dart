@@ -110,13 +110,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 onChanged: (String value) {
                   newTitle = value;
                 },
-                decoration: const InputDecoration(hintText: 'タイトル'),
+                decoration: const InputDecoration(labelText: 'タイトル'),
               ),
               TextField(
                 onChanged: (String value) {
                   newContent = value;
                 },
-                decoration: const InputDecoration(hintText: '内容'),
+                decoration: const InputDecoration(labelText: '内容'),
+                keyboardType: TextInputType.multiline,
+                maxLines: 10,
+                minLines: 2,
               ),
             ],
           ),
