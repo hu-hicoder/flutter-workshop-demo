@@ -25,7 +25,7 @@ jobs:
         run: flutter pub get
 
       - name: Build Flutter Web
-        run: flutter build web
+        run: flutter build web --release --base-href="/flutter-workshop-demo/"
 
       - name: Create .nojekyll file
         run: touch build/web/.nojekyll
